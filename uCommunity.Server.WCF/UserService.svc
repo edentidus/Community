@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="uCommunity.Server.WCF.UserService" CodeBehind="~/App_Code/UserService.cs" %>

@@ -19,8 +19,8 @@ namespace uCommunity.JPush.TestClient
             Console.WriteLine("*****开始发送******");
 
             //String result;
-            String master_secret = "2b38ce69b1de2a7fa95706ea";
-            String app_key = "dd1066407b044738b6479275";
+            String master_secret = "e02430c13fbe4bbcd4248a42";
+            String app_key = "4adc1a353a631559f8956960";
             int sendno = 9;
             JPushClient client = new JPushClient(app_key, master_secret);
             MessageResult result = null;
