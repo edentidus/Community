@@ -5,6 +5,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
 using System.Threading.Tasks;
+using uCommunity.Server.Data;
 
 namespace uCommunity.Interface.ServiceContract
 {
@@ -17,5 +18,9 @@ namespace uCommunity.Interface.ServiceContract
         /// <returns></returns>
         [OperationContract]
         int GetUserCount();
+
+        [OperationContract]
+        [WebGet(UriTemplate = "GetUser/{userId}", ResponseFormat = WebMessageFormat.Json)]
+        User GetUser(Guid userId);
     }
 }

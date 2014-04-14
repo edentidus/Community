@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="uCommunityModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Topic">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+          <Property Name="Content" Type="text" />
+          <Property Name="CreatedBy" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreatedTime" Type="datetime" Nullable="false" />
+          <Property Name="Kind" Type="smallint" />
+          <Property Name="IsTop" Type="bit" Nullable="false" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="ParentTopic" Type="bigint" Nullable="false" />
+          <Property Name="Category" Type="int" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Alias" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="LoginName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Pwd" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'uCommunity.dbo.UserFollower' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="UserFollower">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="FollowedUserId" />
+          </Key>
+          <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="FollowedUserId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="varbinary" MaxLength="50" Nullable="false" />
+          <Property Name="IsEnabled" Type="bit" Nullable="false" />
+          <Property Name="Description" Type="text" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'uCommunity.dbo.UserInGroup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="UserInGroup">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GroupId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Topic_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Topic" Type="Self.Topic" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Topic">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserFollower_User">
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserFollower" Type="Self.UserFollower" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserFollower">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserFollower_User1">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserFollower" Type="Self.UserFollower" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserFollower">
+              <PropertyRef Name="FollowedUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserInGroup_User">
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserInGroup" Type="Self.UserInGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserInGroup">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserInGroup_UserGroup">
+          <End Role="UserGroup" Type="Self.UserGroup" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="UserInGroup" Type="Self.UserInGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserGroup">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserInGroup">
+              <PropertyRef Name="GroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="uCommunityModelStoreContainer">
+          <EntitySet Name="Topic" EntityType="Self.Topic" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserGroup" EntityType="Self.UserGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserFollower" EntityType="Self.UserFollower" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[UserFollower].[UserId] AS [UserId], 
+[UserFollower].[FollowedUserId] AS [FollowedUserId]
+FROM [dbo].[UserFollower] AS [UserFollower]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="UserInGroup" EntityType="Self.UserInGroup" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[UserInGroup].[UserId] AS [UserId], 
+[UserInGroup].[GroupId] AS [GroupId]
+FROM [dbo].[UserInGroup] AS [UserInGroup]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Topic_User" Association="Self.FK_Topic_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Topic" EntitySet="Topic" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserFollower_User" Association="Self.FK_UserFollower_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserFollower" EntitySet="UserFollower" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserFollower_User1" Association="Self.FK_UserFollower_User1">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserFollower" EntitySet="UserFollower" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserInGroup_User" Association="Self.FK_UserInGroup_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserInGroup" EntitySet="UserInGroup" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserInGroup_UserGroup" Association="Self.FK_UserInGroup_UserGroup">
+            <End Role="UserGroup" EntitySet="UserGroup" />
+            <End Role="UserInGroup" EntitySet="UserInGroup" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="uCommunityModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="uCommunityEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Topics" EntityType="uCommunityModel.Topic" />
+          <EntitySet Name="Users" EntityType="uCommunityModel.User" />
+          <EntitySet Name="UserGroups" EntityType="uCommunityModel.UserGroup" />
+          <AssociationSet Name="FK_Topic_User" Association="uCommunityModel.FK_Topic_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Topic" EntitySet="Topics" />
+          </AssociationSet>
+          <AssociationSet Name="UserFollower" Association="uCommunityModel.UserFollower">
+            <End Role="User" EntitySet="Users" />
+            <End Role="User1" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="UserInGroup" Association="uCommunityModel.UserInGroup">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserGroup" EntitySet="UserGroups" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Topic">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Kind" Type="Int16" />
+          <Property Name="IsTop" Type="Boolean" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="ParentTopic" Type="Int64" Nullable="false" />
+          <Property Name="Category" Type="Int32" />
+          <NavigationProperty Name="Creator" Relationship="uCommunityModel.FK_Topic_User" FromRole="Topic" ToRole="User" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Alias" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LoginName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pwd" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Topics" Relationship="uCommunityModel.FK_Topic_User" FromRole="User" ToRole="Topic" />
+          <NavigationProperty Name="Followers" Relationship="uCommunityModel.UserFollower" FromRole="User" ToRole="User1" />
+          <NavigationProperty Name="UserGroups" Relationship="uCommunityModel.UserInGroup" FromRole="User" ToRole="UserGroup" />
+        </EntityType>
+        <EntityType Name="UserGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="Binary" Nullable="false" MaxLength="50" FixedLength="false" />
+          <Property Name="IsEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="uCommunityModel.UserInGroup" FromRole="UserGroup" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_Topic_User">
+          <End Type="uCommunityModel.User" Role="User" Multiplicity="1" />
+          <End Type="uCommunityModel.Topic" Role="Topic" Multiplicity="*" />
+        </Association>
+        <Association Name="UserFollower">
+          <End Type="uCommunityModel.User" Role="User" Multiplicity="*" />
+          <End Type="uCommunityModel.User" Role="User1" Multiplicity="*" />
+        </Association>
+        <Association Name="UserInGroup">
+          <End Type="uCommunityModel.User" Role="User" Multiplicity="*" />
+          <End Type="uCommunityModel.UserGroup" Role="UserGroup" Multiplicity="*" />
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="uCommunityModelStoreContainer" CdmEntityContainer="uCommunityEntities">
+          <EntitySetMapping Name="Topics">
+            <EntityTypeMapping TypeName="uCommunityModel.Topic">
+              <MappingFragment StoreEntitySet="Topic">
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="ParentTopic" ColumnName="ParentTopic" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="IsTop" ColumnName="IsTop" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="uCommunityModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Pwd" ColumnName="Pwd" />
+                <ScalarProperty Name="LoginName" ColumnName="LoginName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Alias" ColumnName="Alias" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserGroups">
+            <EntityTypeMapping TypeName="uCommunityModel.UserGroup">
+              <MappingFragment StoreEntitySet="UserGroup">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="FK_Topic_User" TypeName="uCommunityModel.FK_Topic_User" StoreEntitySet="Topic">
+            <EndProperty Name="Topic">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+            <EndProperty Name="User">
+              <ScalarProperty Name="Id" ColumnName="CreatedBy" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="UserFollower" TypeName="uCommunityModel.UserFollower" StoreEntitySet="UserFollower">
+            <EndProperty Name="User1">
+              <ScalarProperty Name="Id" ColumnName="FollowedUserId" />
+            </EndProperty>
+            <EndProperty Name="User">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="UserInGroup" TypeName="uCommunityModel.UserInGroup" StoreEntitySet="UserInGroup">
+            <EndProperty Name="UserGroup">
+              <ScalarProperty Name="Id" ColumnName="GroupId" />
+            </EndProperty>
+            <EndProperty Name="User">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

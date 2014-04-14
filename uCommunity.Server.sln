@@ -13,7 +13,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "uCommunity.Server.WCF", "ht
 	ProjectSection(WebsiteProperties) = preProject
 		UseIISExpress = "true"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
-		ProjectReferences = "{a2e07050-10c1-47c4-b539-919165b18ae4}|uCommunity.Interface.dll;{e281d457-f259-4f0b-8608-16c81d8ae97b}|uCommunity.JPush.Api.dll;{28E0C0B2-8DA5-4AFC-BBFE-389BF4E8E407}|uCommunity.Utility.dll;"
+		ProjectReferences = "{a2e07050-10c1-47c4-b539-919165b18ae4}|uCommunity.Interface.dll;{e281d457-f259-4f0b-8608-16c81d8ae97b}|uCommunity.JPush.Api.dll;{28E0C0B2-8DA5-4AFC-BBFE-389BF4E8E407}|uCommunity.Utility.dll;{ed8ce5fa-cc05-4676-9dcb-f64f6fd70f5c}|uCommunity.Server.Data.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_55935"
 		Debug.AspNetCompiler.PhysicalPath = "uCommunity.Server.WCF\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_55935\"
@@ -33,6 +33,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "uCommunity.Server.WCF", "ht
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCommunity.Interface", "uCommunity.Interface\uCommunity.Interface.csproj", "{A2E07050-10C1-47C4-B539-919165B18AE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCommunity.Server.Data", "uCommunity.Server.Data\uCommunity.Server.Data.csproj", "{ED8CE5FA-CC05-4676-9DCB-F64F6FD70F5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +62,10 @@ Global
 		{A2E07050-10C1-47C4-B539-919165B18AE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2E07050-10C1-47C4-B539-919165B18AE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2E07050-10C1-47C4-B539-919165B18AE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED8CE5FA-CC05-4676-9DCB-F64F6FD70F5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED8CE5FA-CC05-4676-9DCB-F64F6FD70F5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED8CE5FA-CC05-4676-9DCB-F64F6FD70F5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED8CE5FA-CC05-4676-9DCB-F64F6FD70F5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
