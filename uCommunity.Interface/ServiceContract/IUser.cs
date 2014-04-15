@@ -10,7 +10,7 @@ using System.Runtime.Serialization;
 
 namespace uCommunity.Interface.ServiceContract
 {
-    [ServiceContract]
+    [ServiceContract(Namespace = "http://unisys.com/")]
     public interface IUser
     {
         /// <summary>
@@ -21,6 +21,11 @@ namespace uCommunity.Interface.ServiceContract
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
         int GetUserCount();
 
+        /// <summary>
+        /// Return specific user by user id
+        /// </summary>
+        /// <param name="userId">Guid for user</param>
+        /// <returns></returns>
         [OperationContract]
         [WebGet(UriTemplate = "GetUser/{userId}", ResponseFormat = WebMessageFormat.Json)]
         User GetUser(string userId);

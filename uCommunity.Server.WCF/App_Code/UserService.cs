@@ -10,23 +10,20 @@ namespace uCommunity.Server.WCF
     /// <summary>
     /// Summary description for UserService
     /// </summary>
-    public class UserService : IUser
+    public class UserService : ServiceBase, IUser
     {
-        uCommunityEntities entities;
         public UserService()
         {
-            entities = new uCommunityEntities();
-            
         }
 
         public int GetUserCount()
         {
-            return entities.Users.Count();
+            return base.Entities.Users.Count();
         }
 
         public User GetUser(string userId)
         {
-            var retval = entities.Users.FirstOrDefault(u => u.Id.Equals(new Guid(userId))) as User;
+            var retval = base.Entities.Users.FirstOrDefault(u => u.Id.Equals(new Guid(userId))) as User;
             return retval;
         }
     }
