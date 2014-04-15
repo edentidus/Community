@@ -21,12 +21,12 @@ namespace uCommunity.Server.WCF
 
         public int GetUserCount()
         {
-            return 1;
+            return entities.Users.Count();
         }
 
-        public Data.User GetUser(Guid userId)
+        public User GetUser(string userId)
         {
-            var retval = entities.Users.FirstOrDefault(u => u.Id.Equals(userId));
+            var retval = entities.Users.FirstOrDefault(u => u.Id.Equals(new Guid(userId))) as User;
             return retval;
         }
     }

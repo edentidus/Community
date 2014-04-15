@@ -18,6 +18,7 @@ namespace uCommunity.Server.Data
         public uCommunityEntities()
             : base("name=uCommunityEntities")
         {
+    		base.Configuration.ProxyCreationEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
