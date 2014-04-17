@@ -11,8 +11,24 @@ public class ServiceBase
 {
 	public ServiceBase()
 	{
-        this.Entities = new uCommunityEntities();	
 	}
 
-    protected uCommunityEntities Entities { get; private set; }
+    protected ResultWrapper<T> TryDo<T>(Func<uCommunityEntities, T> func)
+    {
+        ResultWrapper<T> retval = new ResultWrapper<T>();
+        try
+        {
+            using (uCommunityEntities entities = new uCommunityEntities())
+            {
+                retval.Result = func(entities);
+            }
+        }
+        catch(Exception ex)
+        {
+            retval.HasError = true;
+            retval.ErrorMessage = ex.Message;
+        }
+
+        return retval;
+    }
 }

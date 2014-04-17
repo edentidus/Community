@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
+﻿using System.ServiceModel;
 using System.ServiceModel.Web;
-using System.Text;
-using System.Threading.Tasks;
 using uCommunity.Server.Data;
-using System.Runtime.Serialization;
 
 namespace uCommunity.Interface.ServiceContract
 {
     [ServiceContract(Namespace = "http://unisys.com/")]
-    public interface IUser
+    public interface IUserService
     {
         /// <summary>
         /// Return the number of all users in system
@@ -19,7 +13,7 @@ namespace uCommunity.Interface.ServiceContract
         /// <returns></returns>
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        int GetUserCount();
+        ResultWrapper<int> GetUserCount();
 
         /// <summary>
         /// Return specific user by user id
@@ -28,6 +22,15 @@ namespace uCommunity.Interface.ServiceContract
         /// <returns></returns>
         [OperationContract]
         [WebGet(UriTemplate = "GetUser/{userId}", ResponseFormat = WebMessageFormat.Json)]
-        User GetUser(string userId);
+        ResultWrapper<User> GetUser(string userId);
+
+        /// <summary>
+        /// Create a new user
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method="POST", RequestFormat=WebMessageFormat.Json, ResponseFormat=WebMessageFormat.Json)]
+        ResultWrapper<User> CreateUser(User user);
     }
 }

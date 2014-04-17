@@ -5,9 +5,15 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="uCommunityModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'uCommunity.dbo.Topic' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Topic">
           <Key>
             <PropertyRef Name="Id" />
+            <PropertyRef Name="CreatedBy" />
+            <PropertyRef Name="CreatedTime" />
+            <PropertyRef Name="IsTop" />
+            <PropertyRef Name="ParentTopic" />
           </Key>
           <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Title" Type="nvarchar" MaxLength="50" />
@@ -19,6 +25,7 @@
           <Property Name="Sequence" Type="int" />
           <Property Name="ParentTopic" Type="bigint" Nullable="false" />
           <Property Name="Category" Type="int" />
+          <Property Name="LastUpdated" Type="datetime" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -128,9 +135,23 @@ warning 6002: The table/view 'uCommunity.dbo.UserInGroup' does not have a primar
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="uCommunityModelStoreContainer">
-          <EntitySet Name="Topic" EntityType="Self.Topic" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserGroup" EntityType="Self.UserGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Topic" EntityType="Self.Topic" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[Topic].[Id] AS [Id], 
+[Topic].[Title] AS [Title], 
+[Topic].[Content] AS [Content], 
+[Topic].[CreatedBy] AS [CreatedBy], 
+[Topic].[CreatedTime] AS [CreatedTime], 
+[Topic].[Kind] AS [Kind], 
+[Topic].[IsTop] AS [IsTop], 
+[Topic].[Sequence] AS [Sequence], 
+[Topic].[ParentTopic] AS [ParentTopic], 
+[Topic].[Category] AS [Category], 
+[Topic].[LastUpdated] AS [LastUpdated]
+FROM [dbo].[Topic] AS [Topic]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="UserFollower" EntityType="Self.UserFollower" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [UserFollower].[UserId] AS [UserId], 
@@ -169,9 +190,9 @@ FROM [dbo].[UserInGroup] AS [UserInGroup]</DefiningQuery>
     <edmx:ConceptualModels>
       <Schema Namespace="uCommunityModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="uCommunityEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Topics" EntityType="uCommunityModel.Topic" />
           <EntitySet Name="Users" EntityType="uCommunityModel.User" />
           <EntitySet Name="UserGroups" EntityType="uCommunityModel.UserGroup" />
+          <EntitySet Name="Topics" EntityType="uCommunityModel.Topic" />
           <AssociationSet Name="FK_Topic_User" Association="uCommunityModel.FK_Topic_User">
             <End Role="User" EntitySet="Users" />
             <End Role="Topic" EntitySet="Topics" />
@@ -185,21 +206,6 @@ FROM [dbo].[UserInGroup] AS [UserInGroup]</DefiningQuery>
             <End Role="UserGroup" EntitySet="UserGroups" />
           </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Topic">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="Kind" Type="Int16" />
-          <Property Name="IsTop" Type="Boolean" Nullable="false" />
-          <Property Name="Sequence" Type="Int32" />
-          <Property Name="ParentTopic" Type="Int64" Nullable="false" />
-          <Property Name="Category" Type="Int32" />
-          <NavigationProperty Name="Creator" Relationship="uCommunityModel.FK_Topic_User" FromRole="Topic" ToRole="User" />
-        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="Id" />
@@ -212,7 +218,8 @@ FROM [dbo].[UserInGroup] AS [UserInGroup]</DefiningQuery>
           <Property Name="LoginName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Pwd" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Topics" Relationship="uCommunityModel.FK_Topic_User" FromRole="User" ToRole="Topic" />
-          <NavigationProperty Name="Followers" Relationship="uCommunityModel.UserFollower" FromRole="User" ToRole="User1" />
+          <NavigationProperty Name="User1" Relationship="uCommunityModel.UserFollower" FromRole="User" ToRole="User1" />
+          <NavigationProperty Name="Users" Relationship="uCommunityModel.UserFollower" FromRole="User1" ToRole="User" />
           <NavigationProperty Name="UserGroups" Relationship="uCommunityModel.UserInGroup" FromRole="User" ToRole="UserGroup" />
         </EntityType>
         <EntityType Name="UserGroup">
@@ -225,9 +232,38 @@ FROM [dbo].[UserInGroup] AS [UserInGroup]</DefiningQuery>
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Users" Relationship="uCommunityModel.UserInGroup" FromRole="UserGroup" ToRole="User" />
         </EntityType>
+        <EntityType Name="Topic">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="CreatedBy" />
+            <PropertyRef Name="CreatedTime" />
+            <PropertyRef Name="IsTop" />
+            <PropertyRef Name="ParentTopic" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="Guid" Nullable="false" />
+          <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Kind" Type="Int16" />
+          <Property Name="IsTop" Type="Boolean" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="ParentTopic" Type="Int64" Nullable="false" />
+          <Property Name="Category" Type="Int32" />
+          <Property Name="LastUpdated" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="User" Relationship="uCommunityModel.FK_Topic_User" FromRole="Topic" ToRole="User" />
+        </EntityType>
         <Association Name="FK_Topic_User">
           <End Type="uCommunityModel.User" Role="User" Multiplicity="1" />
           <End Type="uCommunityModel.Topic" Role="Topic" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Topic">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
         </Association>
         <Association Name="UserFollower">
           <End Type="uCommunityModel.User" Role="User" Multiplicity="*" />
@@ -243,21 +279,6 @@ FROM [dbo].[UserInGroup] AS [UserInGroup]</DefiningQuery>
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="uCommunityModelStoreContainer" CdmEntityContainer="uCommunityEntities">
-          <EntitySetMapping Name="Topics">
-            <EntityTypeMapping TypeName="uCommunityModel.Topic">
-              <MappingFragment StoreEntitySet="Topic">
-                <ScalarProperty Name="Category" ColumnName="Category" />
-                <ScalarProperty Name="ParentTopic" ColumnName="ParentTopic" />
-                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
-                <ScalarProperty Name="IsTop" ColumnName="IsTop" />
-                <ScalarProperty Name="Kind" ColumnName="Kind" />
-                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
-                <ScalarProperty Name="Content" ColumnName="Content" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="uCommunityModel.User">
               <MappingFragment StoreEntitySet="User">
@@ -281,14 +302,23 @@ FROM [dbo].[UserInGroup] AS [UserInGroup]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="FK_Topic_User" TypeName="uCommunityModel.FK_Topic_User" StoreEntitySet="Topic">
-            <EndProperty Name="Topic">
-              <ScalarProperty Name="Id" ColumnName="Id" />
-            </EndProperty>
-            <EndProperty Name="User">
-              <ScalarProperty Name="Id" ColumnName="CreatedBy" />
-            </EndProperty>
-          </AssociationSetMapping>
+          <EntitySetMapping Name="Topics">
+            <EntityTypeMapping TypeName="uCommunityModel.Topic">
+              <MappingFragment StoreEntitySet="Topic">
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="ParentTopic" ColumnName="ParentTopic" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="IsTop" ColumnName="IsTop" />
+                <ScalarProperty Name="Kind" ColumnName="Kind" />
+                <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <AssociationSetMapping Name="UserFollower" TypeName="uCommunityModel.UserFollower" StoreEntitySet="UserFollower">
             <EndProperty Name="User1">
               <ScalarProperty Name="Id" ColumnName="FollowedUserId" />

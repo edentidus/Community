@@ -10,21 +10,35 @@ namespace uCommunity.Server.WCF
     /// <summary>
     /// Summary description for UserService
     /// </summary>
-    public class UserService : ServiceBase, IUser
+    public class UserService : ServiceBase, IUserService
     {
         public UserService()
         {
         }
 
-        public int GetUserCount()
+        public ResultWrapper<int> GetUserCount()
         {
-            return base.Entities.Users.Count();
+            return base.TryDo<int>((entities) => entities.Users.Count());
         }
 
-        public User GetUser(string userId)
+        public ResultWrapper<User> GetUser(string userId)
         {
-            var retval = base.Entities.Users.FirstOrDefault(u => u.Id.Equals(new Guid(userId))) as User;
-            return retval;
+            return base.TryDo<User>((entities) => entities.Users.FirstOrDefault(u => u.Id.Equals(new Guid(userId))));
+        }
+
+        public ResultWrapper<User> CreateUser(User user)
+        {
+            return base.TryDo<User>((entities) =>
+                {
+                    user.Id = Guid.NewGuid();
+                    // Login name should be unique
+                    if (entities.Users.Any((u) => u.LoginName.Equals(user.LoginName)))
+                        throw new ArgumentException("User already in system.");
+                    entities.Users.Add(user);
+                    if (entities.SaveChanges() != 1)
+                        throw new InvalidOperationException();
+                    return user;
+                });
         }
     }
 }

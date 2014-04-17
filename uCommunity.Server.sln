@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCommunity.JPush.Api", "uCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCommunity.Utility", "uCommunity.Utility\uCommunity.Utility.csproj", "{28E0C0B2-8DA5-4AFC-BBFE-389BF4E8E407}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCommunity.JPush.TestClient", "uCommunity.JPush.TestClient\uCommunity.JPush.TestClient.csproj", "{DAB0FEEB-EE2A-4BC1-8A1F-B9836062E9EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uCommunity.TestClient", "uCommunity.JPush.TestClient\uCommunity.TestClient.csproj", "{DAB0FEEB-EE2A-4BC1-8A1F-B9836062E9EF}"
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "uCommunity.Server.WCF", "http://localhost:55935", "{5E113264-D706-4E08-B951-A556CB4CD168}"
 	ProjectSection(WebsiteProperties) = preProject

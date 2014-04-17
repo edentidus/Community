@@ -43,7 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceContract\IUser.cs" />
+    <Compile Include="ServiceContract\ITopicService.cs" />
+    <Compile Include="ServiceContract\IUserService.cs" />
+    <Compile Include="ServiceContract\IUserGroupService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\uCommunity.Server.Data\uCommunity.Server.Data.csproj">

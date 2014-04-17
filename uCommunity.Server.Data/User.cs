@@ -19,7 +19,8 @@ namespace uCommunity.Server.Data
         public User()
         {
             this.Topics = new HashSet<Topic>();
-            this.Followers = new HashSet<User>();
+            this.User1 = new HashSet<User>();
+            this.Users = new HashSet<User>();
             this.UserGroups = new HashSet<UserGroup>();
         }
     
@@ -41,7 +42,9 @@ namespace uCommunity.Server.Data
         [DataMember] 
         public virtual ICollection<Topic> Topics { get; set; }
         [DataMember] 
-        public virtual ICollection<User> Followers { get; set; }
+        public virtual ICollection<User> User1 { get; set; }
+        [DataMember] 
+        public virtual ICollection<User> Users { get; set; }
         [DataMember] 
         public virtual ICollection<UserGroup> UserGroups { get; set; }
     }

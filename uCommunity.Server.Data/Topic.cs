@@ -23,6 +23,8 @@ namespace uCommunity.Server.Data
         [DataMember] 
         public string Content { get; set; }
         [DataMember] 
+        public System.Guid CreatedBy { get; set; }
+        [DataMember] 
         public System.DateTime CreatedTime { get; set; }
         [DataMember] 
         public Nullable<short> Kind { get; set; }
@@ -34,8 +36,10 @@ namespace uCommunity.Server.Data
         public long ParentTopic { get; set; }
         [DataMember] 
         public Nullable<int> Category { get; set; }
+        [DataMember] 
+        public Nullable<System.DateTime> LastUpdated { get; set; }
     
         [DataMember] 
-        public virtual User Creator { get; set; }
+        public virtual User User { get; set; }
     }
 }
